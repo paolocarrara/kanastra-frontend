@@ -1,6 +1,11 @@
 import { ReactNode, createContext, useContext, useReducer } from "react";
 
-enum FileActionType { }
+export enum FileActionType {
+  select,
+  upload,
+  success,
+  error
+ }
 
 type ReducerAction<T, P> = {
   type: T;
@@ -10,7 +15,7 @@ type ReducerAction<T, P> = {
 
 type FileContextState = {
   isLoading: boolean;
-  file: File | null;
+  file?: File | null;
   fileList: File[]; // & {} You can add more information about the challenge inside this type
 };
 
@@ -29,8 +34,9 @@ type FileContextType = {
 type FileProviderProps = { children: ReactNode };
 
 export const FileContextInitialValues: Partial<FileContextState> = {
-  file: {} as File,
+  file: null,
   isLoading: false,
+  fileList: []
 };
 
 const FileContext = createContext({} as FileContextType);
@@ -40,13 +46,43 @@ const FileReducer = (
   action: FileAction,
 ): FileContextState => {
   switch (action.type) {
+    case FileActionType.select: {
+      return {
+        ...state,
+        file: action.payload?.file
+      };
+    }
+    case FileActionType.upload: {
+      return {
+        ...state,
+        isLoading: true
+      };
+    }
+    case FileActionType.success: {
+      return {
+        ...state,
+        isLoading: false,
+        file: null,
+        fileList: [
+          ...state.fileList,
+          state.file!
+        ]
+      };
+    }
+    case FileActionType.error: {
+      return {
+        ...state,
+        isLoading: false,
+        file: null
+      };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
   }
 };
 
-const FileProvider = ({ children }: FileProviderProps) => {
+export const FileProvider = ({ children }: FileProviderProps) => {
   const [state, dispatch] = useReducer(
     FileReducer,
     FileContextInitialValues as FileContextState,
@@ -59,7 +95,7 @@ const FileProvider = ({ children }: FileProviderProps) => {
   );
 };
 
-const useFileContext = () => {
+export const useFileContext = () => {
   const context = useContext(FileContext);
 
   if (context === undefined)

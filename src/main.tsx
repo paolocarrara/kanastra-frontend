@@ -1,14 +1,15 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 
-import * as Components from './components'
+import * as Components from "./components";
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
-      <Components.NoMatch />
-      {/* Your Job here */}
+      <Components.FileProvider>
+        <Components.YesMatch />
+      </Components.FileProvider>
     </BrowserRouter>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);

@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 
-enum FileActionType {}
+enum FileActionType {
+  update
+}
 
 type ReducerAction<T, P> = {
   type: T;
